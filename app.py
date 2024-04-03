@@ -15,25 +15,29 @@ app = Flask(__name__)
 def mainroute():
     return render_template("index.html")
 
-@app.route('/index', methods=["GET", "POST"])
-def index():
-    if request.method == "POST":
-        prompt = request.form.get("prompt")
-        print("prompt = \n", prompt)
-        engine="text-davinci-003"
-        max_tokens=550
-        temperature=0.
-        top_p=0
-        presence_penalty=1
-        response =openai.Completion.create(engine=engine,prompt=prompt,max_tokens=max_tokens,
-                                       temperature=temperature,top_p=top_p,
-                                       presence_penalty=presence_penalty,
-                                       stream=False)
-        offset=0
-        hresponse=response['choices'][0]['text'][offset:]
-        print("hresponse = \n", hresponse)
-        return render_template('answer.html', prompt=prompt, response=hresponse)
-    else:
-        return render_template("index.html")        
+@app.route('/chatgpt', methods=['GET'])
+def open_ai():
+  domains_data[0]["visits"] += 1
+  text = request.args.get('query', '')
+  key = 'darkman|YVg3cyukPe8jSVBb8VuLT3BlbkFJlh0mhBk714FLEBOobPN1'
+  i = (key).split('darkman|')[1]
+  openai.api_key = f'sk-{i}'
+  try:
+    if text == '':
+      return Not_text()
+
+    completion = openai.ChatCompletion.create(model="gpt-3.5-turbo",
+                                              messages=[{
+                                                  "role": "user",
+                                                  "content": text
+                                              }])
+    answer = completion.choices[0].message["content"]
+    return jsonify({"result": answer})
+  except Exception as e:
+    return jsonify({
+        'error': str(e),
+        'result': 'An internal server error occurred'
+    }), 500
+)        
     
 
