@@ -40,6 +40,9 @@ def open_ai():
     }), 500
 )        
 
+##################################################
+
+
 def create_image(profile_url):
   # Load the background image
   background_path = 'database/background2.png'
@@ -66,15 +69,18 @@ def create_image(profile_url):
   return img_bytes
 
 
-@server.route('/wanted_image')
+@app.route('/wanted_image')
 def generate_image2():
   domains_data[6]["visits"] += 1
   profile_url = request.args.get(
       'profile_url', 'https://telegra.ph/file/cd9ef2c65ea3e791cf419.jpg')
   img_bytes = create_image(profile_url)
   return send_file(img_bytes, mimetype='image/png')
+    
+    ##################################################
 
-    @server.route('/gen_image')
+
+    @app.route('/gen_image')
 def generate_image():
   domains_data[5]["visits"] += 1
   profile_url = request.args.get(
